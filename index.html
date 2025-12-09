@@ -1,0 +1,1666 @@
+<html lang="ko"><head><meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teambl Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Noto+Sans+KR:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+    <style>
+    body {
+    font-family: 'Inter', 'Noto Sans KR', sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-color: #F8FAFC;
+    }
+    /* Smooth Scrollbar */
+    ::-webkit-scrollbar {
+    width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+    background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+    background-color: #CBD5E1;
+    border-radius: 20px;
+    }
+    /* Animation: Fade Slide Blur In */
+    @keyframes enter-animation {
+    0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+    filter: blur(4px);
+    }
+    100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+    }
+    }
+    .animate-enter {
+    animation: enter-animation 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .delay-100 {
+    animation-delay: 100ms;
+    }
+    .delay-200 {
+    animation-delay: 200ms;
+    }
+    .delay-300 {
+    animation-delay: 300ms;
+    }
+    .delay-400 {
+    animation-delay: 400ms;
+    }
+    .delay-500 {
+    animation-delay: 500ms;
+    }
+    .delay-600 {
+    animation-delay: 600ms;
+    }
+    /* Shiny Button Effect */
+    .btn-shiny {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    }
+    .btn-shiny::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(115deg,
+    transparent 0%,
+    transparent 40%,
+    rgba(255, 255, 255, 0.4) 45%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 55%,
+    transparent 100%);
+    transform: skewX(-20deg);
+    animation: shiny-infinite 3s infinite linear;
+    }
+    @keyframes shiny-infinite {
+    0% {
+    left: -100%;
+    }
+    20% {
+    left: 100%;
+    }
+    100% {
+    left: 100%;
+    }
+    }
+    /* Border Beam Animation on Hover */
+    .btn-beam {
+    position: relative;
+    z-index: 0;
+    }
+    .btn-beam::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 9999px;
+    background: conic-gradient(from 0deg at 50% 50%, transparent 0%, #6366f1 20%, transparent 40%);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: spin 3s linear infinite;
+    }
+    .btn-beam:hover::before {
+    opacity: 1;
+    }
+    .btn-beam span {
+    position: relative;
+    z-index: 1;
+    background-color: inherit;
+    border-radius: inherit;
+    }
+    @keyframes spin {
+    from {
+    transform: rotate(0deg);
+    }
+    to {
+    transform: rotate(360deg);
+    }
+    }
+    /* Card Hover Effects */
+    .hover-card {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .hover-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+    }
+    </style></head>
+    
+    <body class="text-slate-600 antialiased selection:bg-blue-100 selection:text-blue-700 relative">
+    
+        <!-- Navbar -->
+        <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 animate-enter">
+            <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+                <!-- Left: Logo & Title -->
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
+                        <iconify-icon icon="solar:chart-square-bold" width="20"></iconify-icon>
+                    </div>
+                    <h1 class="text-lg font-semibold tracking-tight text-slate-900">
+                        Teambl
+                    </h1>
+                </div>
+    
+                <!-- Right: Actions -->
+                <div class="flex items-center gap-3">
+                    <button onclick="openDuesModal()" class="btn-shiny px-4 py-2 rounded-full text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition-colors flex items-center gap-2 shadow-sm">
+                        <iconify-icon icon="solar:users-group-rounded-bold" width="16" class="text-slate-400"></iconify-icon>
+                        <span>소셜 동문회비</span>
+                    </button>
+    
+                    <button onclick="openCalendarModal()" class="btn-shiny btn-beam relative bg-slate-900 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 flex items-center gap-2 group">
+                        <span class="absolute inset-[1px] bg-slate-900 rounded-full z-0"></span>
+                        <span class="relative z-10 flex items-center gap-2">
+                            <iconify-icon icon="solar:calendar-bold" width="16" class="text-blue-300"></iconify-icon>
+                            멘토 캘린더
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </header>
+    
+        <main class="max-w-7xl mx-auto px-6 py-10 space-y-12">
+    
+            <!-- Title Section -->
+            <section class="animate-enter delay-100 text-center max-w-2xl mx-auto mb-8">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200 mb-4">
+                    <iconify-icon icon="solar:cup-star-bold" width="14" class="text-blue-600"></iconify-icon>
+                    2025 상반기 성과 지표
+                </div>
+                <h2 class="text-3xl font-semibold text-slate-900 tracking-tight mb-3">최고의 문제 해결자를 위한 대시보드</h2>
+                <p class="text-slate-500">데이터 기반의 혁신 성과를 실시간으로 확인하고 검증하세요.</p>
+            </section>
+    
+            <!-- University Rankings -->
+            <section class="animate-enter delay-200">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-slate-900 tracking-tight flex items-center gap-2">
+                        <iconify-icon icon="solar:podium-bold" class="text-blue-600"></iconify-icon>
+                        대학별 혁신 랭킹
+                    </h3>
+                </div>
+    
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- KAIST -->
+                    <div class="hover-card bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm relative overflow-hidden flex flex-col h-full ring-1 ring-blue-500/10">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center text-xl font-bold shadow-lg shadow-blue-600/20">
+                                    1</div>
+                                <div>
+                                    <h4 class="text-lg font-semibold text-slate-900 tracking-tight">KAIST</h4>
+                                    <span class="text-[10px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100 mt-1 inline-flex items-center gap-1">
+                                        <iconify-icon icon="solar:crown-bold" width="12"></iconify-icon> LEGENDARY
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[10px] text-slate-400 uppercase font-medium tracking-wider mb-1">Total Score
+                                </p>
+                                <p class="text-2xl font-bold text-blue-600 tracking-tight">1,800 P</p>
+                            </div>
+                        </div>
+    
+                        <div class="space-y-4 flex-1">
+                            <!-- Scan -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">문제 정의 (Scan 건수)</span>
+                                    <span class="text-xs font-semibold text-slate-900">950<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-blue-600 rounded-full" style="width: 95%"></div>
+                                </div>
+                            </div>
+                            <!-- Project -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">프로젝트화 건수</span>
+                                    <span class="text-xs font-semibold text-slate-900">480<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-400 rounded-full" style="width: 48%"></div>
+                                </div>
+                            </div>
+                            <!-- MGI Problem -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">마이크로집단검증: 문제 포스팅</span>
+                                    <span class="text-xs font-semibold text-slate-900">320<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-300 rounded-full" style="width: 32%"></div>
+                                </div>
+                            </div>
+                            <!-- MGI Solution -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">마이크로집단검증: 솔루션 포스팅</span>
+                                    <span class="text-xs font-semibold text-slate-900">180<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-300 rounded-full" style="width: 18%"></div>
+                                </div>
+                            </div>
+                            <!-- Advisor -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">어드바이저 매칭 건수</span>
+                                    <span class="text-xs font-semibold text-slate-900">120<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-300 rounded-full" style="width: 12%"></div>
+                                </div>
+                            </div>
+                            <!-- Angel -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">엔젤투자 매칭 건수</span>
+                                    <span class="text-xs font-semibold text-slate-900">25<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-300 rounded-full" style="width: 8%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- POSTECH -->
+                    <div class="hover-card bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm relative overflow-hidden flex flex-col h-full">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-xl font-bold border border-slate-200">
+                                    2</div>
+                                <div>
+                                    <h4 class="text-lg font-semibold text-slate-900 tracking-tight">POSTECH</h4>
+                                    <span class="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200 mt-1 inline-flex items-center gap-1">
+                                        <iconify-icon icon="solar:medal-ribbon-bold" width="12"></iconify-icon> ELITE
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[10px] text-slate-400 uppercase font-medium tracking-wider mb-1">Total Score
+                                </p>
+                                <p class="text-2xl font-bold text-slate-700 tracking-tight">1,585 P</p>
+                            </div>
+                        </div>
+    
+                        <div class="space-y-4 flex-1">
+                            <!-- Scan -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">문제 정의 (Scan 건수)</span>
+                                    <span class="text-xs font-semibold text-slate-900">880<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-700 rounded-full" style="width: 88%"></div>
+                                </div>
+                            </div>
+                            <!-- Project -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">프로젝트화 건수</span>
+                                    <span class="text-xs font-semibold text-slate-900">420<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-400 rounded-full" style="width: 42%"></div>
+                                </div>
+                            </div>
+                            <!-- Other metrics simplified -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">마이크로집단검증: 문제 포스팅</span>
+                                    <span class="text-xs font-semibold text-slate-900">280<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-300 rounded-full" style="width: 28%"></div>
+                                </div>
+                            </div>
+                            <!-- Remaining bars -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">마이크로집단검증: 솔루션 포스팅</span>
+                                    <span class="text-xs font-semibold text-slate-900">150<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-300 rounded-full" style="width: 15%"></div>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">어드바이저 매칭 건수</span>
+                                    <span class="text-xs font-semibold text-slate-900">105<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-300 rounded-full" style="width: 10%"></div>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">엔젤투자 매칭 건수</span>
+                                    <span class="text-xs font-semibold text-slate-900">18<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-300 rounded-full" style="width: 6%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- SNU -->
+                    <div class="hover-card bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm relative overflow-hidden flex flex-col h-full">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-xl font-bold border border-slate-200">
+                                    3</div>
+                                <div>
+                                    <h4 class="text-lg font-semibold text-slate-900 tracking-tight">서울대학교</h4>
+                                    <span class="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200 mt-1 inline-flex items-center gap-1">
+                                        <iconify-icon icon="solar:shield-bold" width="12"></iconify-icon> ELITE
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[10px] text-slate-400 uppercase font-medium tracking-wider mb-1">Total Score
+                                </p>
+                                <p class="text-2xl font-bold text-slate-700 tracking-tight">1,350 P</p>
+                            </div>
+                        </div>
+    
+                        <div class="space-y-4 flex-1">
+                            <!-- Scan -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">문제 정의 (Scan 건수)</span>
+                                    <span class="text-xs font-semibold text-slate-900">760<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-700 rounded-full" style="width: 76%"></div>
+                                </div>
+                            </div>
+                            <!-- Project -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">프로젝트화 건수</span>
+                                    <span class="text-xs font-semibold text-slate-900">350<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-400 rounded-full" style="width: 35%"></div>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">마이크로집단검증: 문제 포스팅</span>
+                                    <span class="text-xs font-semibold text-slate-900">220<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-300 rounded-full" style="width: 22%"></div>
+                                </div>
+                            </div>
+                            <!-- Simplified repeating structure -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">마이크로집단검증: 솔루션 포스팅</span>
+                                    <span class="text-xs font-semibold text-slate-900">120<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-300 rounded-full" style="width: 12%"></div>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">어드바이저 매칭 건수</span>
+                                    <span class="text-xs font-semibold text-slate-900">90<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-300 rounded-full" style="width: 9%"></div>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-end">
+                                    <span class="text-[11px] font-medium text-slate-500">엔젤투자 매칭 건수</span>
+                                    <span class="text-xs font-semibold text-slate-900">15<span class="text-slate-400 font-normal ml-0.5">건</span></span>
+                                </div>
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-slate-300 rounded-full" style="width: 5%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Second Row Mini Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <!-- Yonsei -->
+                    <div class="hover-card bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <span class="text-slate-400 font-semibold text-lg w-6">#4</span>
+                            <div>
+                                <h4 class="font-semibold text-slate-900">연세대학교</h4>
+                                <div class="flex items-center gap-2 mt-0.5">
+                                    <div class="h-1.5 w-24 bg-slate-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-slate-400 rounded-full w-[65%]"></div>
+                                    </div>
+                                    <span class="text-xs text-slate-400">1,155 P</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-xs bg-slate-50 text-slate-500 px-2 py-1 rounded-md border border-slate-100">Regular</span>
+                    </div>
+    
+                    <!-- Korea Univ -->
+                    <div class="hover-card bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <span class="text-slate-400 font-semibold text-lg w-6">#5</span>
+                            <div>
+                                <h4 class="font-semibold text-slate-900">고려대학교</h4>
+                                <div class="flex items-center gap-2 mt-0.5">
+                                    <div class="h-1.5 w-24 bg-slate-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-slate-400 rounded-full w-[62%]"></div>
+                                    </div>
+                                    <span class="text-xs text-slate-400">1,090 P</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-xs bg-slate-50 text-slate-500 px-2 py-1 rounded-md border border-slate-100">Regular</span>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Project Cases -->
+            <section class="animate-enter delay-300">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-slate-900 tracking-tight flex items-center gap-2">
+                        <iconify-icon icon="solar:book-bookmark-bold" class="text-blue-600"></iconify-icon>
+                        프로젝트화 사례
+                    </h3>
+                </div>
+    
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Case 1 -->
+                    <div class="hover-card bg-white rounded-2xl p-8 border border-slate-200/80 shadow-sm group">
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-blue-50 text-blue-600 text-[10px] px-2.5 py-1 rounded-full font-semibold border border-blue-100/50">25A</span>
+                            <span class="bg-slate-100 text-slate-600 text-[10px] px-2.5 py-1 rounded-full font-semibold border border-slate-200/50">GPS</span>
+                            <span class="bg-slate-50 text-slate-500 text-[10px] px-2.5 py-1 rounded-full font-semibold border border-slate-200/50">분실 방지</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
+                            미세한 GPS 추적 무충전 키트</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-8">
+                            미세한 GPS 추적을 통해 다양한 소지품의 분실 위험을 낮춰주는 반영구적 분실 방지 키트 제작 프로젝트입니다.
+                        </p>
+                        <div class="flex items-center justify-between border-t border-slate-50 pt-6">
+                            <div class="flex items-center gap-2 text-xs text-slate-400">
+                                <iconify-icon icon="solar:calendar-linear"></iconify-icon>
+                                <span>2025.09 - 2025.12</span>
+                            </div>
+                            <div class="flex items-center -space-x-2 cursor-pointer hover:scale-105 transition-transform" onclick="openModal()">
+                                <div class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 text-xs shadow-sm z-30">
+                                    <iconify-icon icon="solar:user-circle-bold"></iconify-icon>
+                                </div>
+                                <div class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 text-xs shadow-sm z-20">
+                                    <iconify-icon icon="solar:user-circle-bold"></iconify-icon>
+                                </div>
+                                <div class="w-8 h-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 text-[10px] shadow-sm z-10">
+                                    +4</div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Case 2 -->
+                    <div class="hover-card bg-white rounded-2xl p-8 border border-slate-200/80 shadow-sm group">
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-slate-100 text-slate-600 text-[10px] px-2.5 py-1 rounded-full font-semibold border border-slate-200/50">AI</span>
+                            <span class="bg-slate-100 text-slate-600 text-[10px] px-2.5 py-1 rounded-full font-semibold border border-slate-200/50">EdTech</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">AI
+                            기반 개인 맞춤형 학습 플랫폼</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-8">
+                            학생 개개인의 학습 패턴을 분석하여 최적화된 학습 콘텐츠를 제공하는 AI 교육 플랫폼
+                        </p>
+                        <div class="flex items-center justify-between border-t border-slate-50 pt-6">
+                            <div class="flex items-center gap-2 text-xs text-slate-400">
+                                <iconify-icon icon="solar:calendar-linear"></iconify-icon>
+                                <span>2025.03 - 2025.08</span>
+                            </div>
+                            <div class="flex items-center -space-x-2 cursor-pointer hover:scale-105 transition-transform" onclick="openModal()">
+                                <div class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 text-xs shadow-sm z-20">
+                                    <iconify-icon icon="solar:user-circle-bold"></iconify-icon>
+                                </div>
+                                <div class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 text-xs shadow-sm z-10">
+                                    <iconify-icon icon="solar:user-circle-bold"></iconify-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Mentoring -->
+            <section class="animate-enter delay-400">
+                <div class="flex items-center gap-2 mb-6">
+                    <h3 class="text-lg font-semibold text-slate-900 tracking-tight flex items-center gap-2">
+                        <iconify-icon icon="solar:chat-round-dots-bold" class="text-blue-600"></iconify-icon>
+                        동문 멘토링 &amp; 자문
+                    </h3>
+                </div>
+    
+                <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+                    <div class="p-8 border-b border-slate-100">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                                장</div>
+                            <div>
+                                <h4 class="text-sm font-semibold text-slate-900">장**
+                                    <span class="text-slate-400 font-normal mx-1">·</span>
+                                    <span class="text-blue-600 text-xs">멘토</span>
+                                </h4>
+                                <span class="text-xs text-slate-500">3촌 · 2025.11.09</span>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50/50 rounded-xl p-6 mb-4 border border-slate-100">
+                            <h5 class="font-medium text-slate-900 text-sm mb-2">프로젝트 요약 (Problem &amp; Solution)</h5>
+                            <p class="text-slate-600 text-sm leading-relaxed">
+                                기존 분실방지 제품은 배터리 수명이 짧고 고가입니다. 태양광 자가발전과 저전력 블루투스를 활용한 반영구적 키트를 제안합니다.
+                            </p>
+                        </div>
+                    </div>
+    
+                    <div class="p-8 bg-slate-50 space-y-4">
+                        <!-- Reply Item -->
+                        <div class="flex gap-4">
+                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs shrink-0 shadow-sm">
+                                이</div>
+                            <div class="flex-1 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                                <div class="flex justify-between items-start mb-1">
+                                    <span class="text-xs font-semibold text-slate-900">이** <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded ml-1">S사 DSRA</span></span>
+                                    <span class="text-[10px] text-slate-400">17일 전</span>
+                                </div>
+                                <p class="text-slate-600 text-sm mt-1">HW 설계를 이끌고 있는 동문입니다. 아이디어가 흥미롭네요. 기술적인 부분에서 도움이 필요하면
+                                    연락주세요.</p>
+                            </div>
+                        </div>
+                        <!-- Reply Item -->
+                        <div class="flex gap-4">
+                            <div class="w-8 h-8 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-400 text-xs shrink-0">
+                                <iconify-icon icon="solar:user-circle-bold"></iconify-icon>
+                            </div>
+                            <div class="flex-1 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                                <div class="flex justify-between items-start mb-1">
+                                    <span class="text-xs font-semibold text-slate-900">인** <span class="text-[10px] text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded ml-1">CTO</span></span>
+                                    <span class="text-[10px] text-slate-400">8일 전</span>
+                                </div>
+                                <p class="text-slate-600 text-sm mt-1">저희도 검토했던 아이디어라 반갑네요.
+                                    <span class="text-blue-600 cursor-pointer hover:underline">더보기</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="p-4 bg-white border-t border-slate-200">
+                        <button onclick="openInviteAlert()" class="btn-shiny w-full bg-slate-900 text-white font-medium py-2.5 rounded-lg text-sm hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
+                            <iconify-icon icon="solar:pen-new-square-bold" width="16"></iconify-icon> 댓글 작성하기
+                        </button>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- MGI Verification -->
+            <section class="animate-enter delay-500">
+                <div class="flex items-center gap-2 mb-2">
+                    <h3 class="text-lg font-semibold text-slate-900 tracking-tight flex items-center gap-2">
+                        <iconify-icon icon="solar:target-bold" class="text-blue-600"></iconify-icon>
+                        마이크로집단지성 검증 (MGI)
+                    </h3>
+                </div>
+                <p class="text-slate-500 text-sm mb-6">MVP 1000만원 자금은 검증된 엑셀러레이터에게만 공개됩니다.</p>
+    
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <!-- Step 1 -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm relative group hover:border-blue-200 transition-colors">
+                        <div class="absolute top-6 right-6">
+                            <span class="w-2 h-2 rounded-full bg-slate-300 block"></span>
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-500 font-semibold text-sm mb-4">
+                            <iconify-icon icon="solar:check-circle-bold"></iconify-icon> MGI 1단계: 문제정의
+                        </div>
+                        <h4 class="font-medium text-slate-900 text-sm mb-1">건강 식단 관리의 어려움</h4>
+                        <p class="text-slate-500 text-xs mb-4">바쁜 현대인들이 영양 균형을 고려한 식단을...</p>
+    
+                        <div class="w-full bg-slate-100 rounded-full h-1.5 mb-2 overflow-hidden">
+                            <div class="bg-slate-400 h-1.5 rounded-full" style="width: 68%"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-slate-400 font-medium">
+                            <span>17/25 참여</span>
+                            <span class="text-slate-500">진행중 (68%)</span>
+                        </div>
+                    </div>
+    
+                    <!-- Step 2 -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm relative group hover:border-blue-200 transition-colors">
+                        <div class="flex items-center gap-2 text-blue-600 font-semibold text-sm mb-4">
+                            <iconify-icon icon="solar:lock-unlocked-bold"></iconify-icon> MGI 2단계: 솔루션
+                        </div>
+                        <h4 class="font-medium text-slate-900 text-sm mb-1">AI 기반 맞춤형 식단 추천 앱</h4>
+                        <p class="text-slate-500 text-xs mb-4">개인의 건강 데이터와 선호도를 분석하여...</p>
+    
+                        <div class="w-full bg-slate-100 rounded-full h-1.5 mb-2 overflow-hidden">
+                            <div class="bg-blue-600 h-1.5 rounded-full" style="width: 100%"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-slate-400 font-medium">
+                            <span>25/25 참여</span>
+                            <span class="text-blue-600 font-bold">완료</span>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Active Voting Card -->
+                <div class="bg-gradient-to-br from-blue-50 to-slate-50 rounded-2xl p-8 border border-blue-100 relative overflow-hidden">
+                    <div class="flex items-center gap-2 text-blue-700 font-semibold mb-6">
+                        <iconify-icon icon="solar:rocket-bold-duotone"></iconify-icon>
+                        MGI 3단계: 집단지성 투자
+                    </div>
+    
+                    <div class="flex flex-col md:flex-row items-end justify-between gap-6">
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">AI 기반 맞춤형 식단 추천 앱</h3>
+                            <p class="text-slate-600 text-sm mb-6 max-w-xl">MGI 2단계를 통과한 검증된 프로젝트입니다. 집단지성 투자에 참여해 MVP 개발을
+                                지원하세요.</p>
+    
+                            <div class="flex gap-3">
+                                <button onclick="openUpvoteModal()" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 hover:border-emerald-300 px-6 py-2.5 rounded-lg font-medium text-sm flex items-center gap-2 transition-all shadow-sm">
+                                    <iconify-icon icon="solar:like-bold"></iconify-icon> Upvote
+                                </button>
+                                <button onclick="openDownvoteModal()" class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 hover:border-rose-300 px-6 py-2.5 rounded-lg font-medium text-sm flex items-center gap-2 transition-all shadow-sm">
+                                    <iconify-icon icon="solar:dislike-bold"></iconify-icon> Downvote
+                                </button>
+                            </div>
+                        </div>
+    
+                        <div class="bg-white/60 backdrop-blur px-4 py-3 rounded-xl border border-blue-100/50 text-right">
+                            <div class="text-xs text-slate-500 mb-1">남은 시간</div>
+                            <div class="text-lg font-bold text-slate-900 font-mono">5일 12:30:00</div>
+                            <div class="text-[10px] text-blue-600 mt-1">25/300명 참여중</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Prediction Ranking Board -->
+            <section class="animate-enter delay-600">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-slate-900 tracking-tight flex items-center gap-2">
+                        <iconify-icon icon="solar:chart-2-bold" class="text-blue-600"></iconify-icon>
+                        예측 적중률 랭킹
+                    </h3>
+                </div>
+    
+                <div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 border-b border-slate-100 text-slate-500 font-medium">
+                            <tr>
+                                <th class="px-6 py-4 w-20 text-center">#</th>
+                                <th class="px-6 py-4">참여자</th>
+                                <th class="px-6 py-4 text-center">적중/참여</th>
+                                <th class="px-6 py-4 text-right">예측율</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            <tr class="hover:bg-slate-50/50 transition-colors group">
+                                <td class="px-6 py-4 text-center font-bold text-blue-600">
+                                    <iconify-icon icon="solar:medal-star-bold"></iconify-icon>
+                                </td>
+                                <td class="px-6 py-4 font-medium text-slate-900">김**</td>
+                                <td class="px-6 py-4 text-center text-slate-500">45/48</td>
+                                <td class="px-6 py-4 text-right font-bold text-blue-600">93.8%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/50 transition-colors">
+                                <td class="px-6 py-4 text-center font-bold text-slate-400">2</td>
+                                <td class="px-6 py-4 font-medium text-slate-900">이**</td>
+                                <td class="px-6 py-4 text-center text-slate-500">47/52</td>
+                                <td class="px-6 py-4 text-right font-bold text-slate-700">90.4%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/50 transition-colors">
+                                <td class="px-6 py-4 text-center font-bold text-slate-400">3</td>
+                                <td class="px-6 py-4 font-medium text-slate-900">박**</td>
+                                <td class="px-6 py-4 text-center text-slate-500">31/35</td>
+                                <td class="px-6 py-4 text-right font-bold text-slate-700">88.6%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50/50 transition-colors">
+                                <td class="px-6 py-4 text-center text-slate-400">4</td>
+                                <td class="px-6 py-4 font-medium text-slate-900">최**</td>
+                                <td class="px-6 py-4 text-center text-slate-500">35/41</td>
+                                <td class="px-6 py-4 text-right font-medium text-slate-600">85.4%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-xs">
+                        <span class="text-slate-400">총 142명 참여자 중 상위 8명</span>
+                        <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">전체 보기
+                            <iconify-icon icon="solar:arrow-right-linear"></iconify-icon></a>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Footer / Rules -->
+            <section class="border-t border-slate-200 pt-16 pb-8 animate-enter delay-600">
+                <h3 class="text-lg font-semibold text-center text-slate-900 mb-10 tracking-tight">지표 설명 및 승급 규칙</h3>
+    
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                    <div class="flex gap-4 p-4 rounded-xl hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-slate-100">
+                        <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                            <iconify-icon icon="solar:lightbulb-bold" width="20"></iconify-icon>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-slate-900 text-sm mb-1">문제 정의 (Scan)</h4>
+                            <p class="text-slate-500 text-xs leading-relaxed">사회/산업 문제를 정의하고 공식 등록한 건수입니다.</p>
+                        </div>
+                    </div>
+    
+                    <div class="flex gap-4 p-4 rounded-xl hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-slate-100">
+                        <div class="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-blue-600 shrink-0">
+                            <iconify-icon icon="solar:layers-bold" width="20"></iconify-icon>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-slate-900 text-sm mb-1">프로젝트화 (Project)</h4>
+                            <p class="text-slate-500 text-xs leading-relaxed">문제가 실제 연구/개발 프로젝트로 전환된 건수입니다.</p>
+                        </div>
+                    </div>
+    
+                    <div class="flex gap-4 p-4 rounded-xl hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-slate-100">
+                        <div class="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-blue-600 shrink-0">
+                            <iconify-icon icon="solar:check-circle-bold" width="20"></iconify-icon>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-slate-900 text-sm mb-1">MGI 승급</h4>
+                            <p class="text-slate-500 text-xs leading-relaxed">선착순 참여 및 비공개 Upvote 달성 시 다음 단계로 승급합니다.</p>
+                        </div>
+                    </div>
+    
+                    <div class="flex gap-4 p-4 rounded-xl hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-slate-100">
+                        <div class="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-blue-600 shrink-0">
+                            <iconify-icon icon="solar:wad-of-money-bold" width="20"></iconify-icon>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-slate-900 text-sm mb-1">투자 매칭 (Funding)</h4>
+                            <p class="text-slate-500 text-xs leading-relaxed">시드 또는 엔젤 투자를 유치한 건수입니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+    
+        </main>
+    
+        <!-- Team Member Modal -->
+        <div id="teamModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+            <div class="relative w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-y-auto max-h-[90vh] animate-enter">
+                <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors">
+                    <iconify-icon icon="solar:close-circle-bold" width="28"></iconify-icon>
+                </button>
+                <div class="p-10">
+                    <div class="text-center mb-10">
+                        <h2 class="text-2xl font-semibold text-blue-600 mb-2 flex items-center justify-center gap-2">
+                            프로젝트 팀원 명단 및 프로필
+                        </h2>
+                        <p class="text-base font-semibold text-slate-900">함께하는 팀원 (6명)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Social Alumni Dues Modal -->
+        <div id="duesModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+            <!-- Backdrop -->
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeDuesModal()"></div>
+    
+            <!-- Modal Content -->
+            <div class="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-enter border border-slate-100">
+                <!-- Header -->
+                <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-white">
+                    <div>
+                        <h2 class="text-lg font-semibold text-slate-900 flex items-center gap-2">
+                            <iconify-icon icon="solar:cup-star-bold" class="text-blue-600"></iconify-icon>
+                            소셜 동문회비 현황
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-1">인당 월 5만원 기준</p>
+                    </div>
+    
+                    <div class="relative">
+                        <select class="appearance-none bg-slate-50 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg pl-3 pr-8 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer hover:bg-slate-100 transition-colors">
+                            <option>KAIST</option>
+                            <option>POSTECH</option>
+                            <option>서울대학교 공과대학</option>
+                            <option>연세대학교 공과대학</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-500">
+                            <iconify-icon icon="solar:alt-arrow-down-linear" width="14"></iconify-icon>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Body Scroll Area -->
+                <div class="overflow-y-auto max-h-[70vh] bg-white">
+    
+                    <!-- Section 1: Year Ranking -->
+                    <div class="p-6 pb-2">
+                        <h3 class="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                            <iconify-icon icon="solar:calendar-bold" class="text-blue-600"></iconify-icon>
+                            입학년도별 랭킹
+                        </h3>
+                        <div class="overflow-hidden rounded-xl border border-slate-200">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50/80 text-slate-500 font-medium text-xs">
+                                    <tr>
+                                        <th class="px-4 py-3 w-12 text-center">순위</th>
+                                        <th class="px-4 py-3">입학년도</th>
+                                        <th class="px-4 py-3 text-center">인원</th>
+                                        <th class="px-4 py-3 text-right">징수액</th>
+                                        <th class="px-4 py-3 text-right">징수율</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-50 text-slate-700">
+                                    <tr class="hover:bg-slate-50/50 transition-colors">
+                                        <td class="px-4 py-3 text-center"><iconify-icon icon="solar:medal-star-bold" class="text-blue-600 text-lg"></iconify-icon></td>
+                                        <td class="px-4 py-3 font-medium">1992년</td>
+                                        <td class="px-4 py-3 text-center text-slate-500">38명</td>
+                                        <td class="px-4 py-3 text-right font-semibold text-blue-600">1,900만원</td>
+                                        <td class="px-4 py-3 text-right">
+                                            <span class="bg-blue-50 text-blue-600 border border-blue-100 px-2 py-0.5 rounded text-xs font-semibold">100%</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50/50 transition-colors">
+                                        <td class="px-4 py-3 text-center"><iconify-icon icon="solar:medal-star-bold" class="text-slate-400 text-lg"></iconify-icon></td>
+                                        <td class="px-4 py-3 font-medium">1995년</td>
+                                        <td class="px-4 py-3 text-center text-slate-500">42명</td>
+                                        <td class="px-4 py-3 text-right font-semibold text-slate-700">1,890만원</td>
+                                        <td class="px-4 py-3 text-right">
+                                            <span class="bg-slate-50 text-slate-600 border border-slate-200 px-2 py-0.5 rounded text-xs font-semibold">90%</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50/50 transition-colors">
+                                        <td class="px-4 py-3 text-center"><iconify-icon icon="solar:medal-star-bold" class="text-slate-300 text-lg"></iconify-icon></td>
+                                        <td class="px-4 py-3 font-medium">2000년</td>
+                                        <td class="px-4 py-3 text-center text-slate-500">45명</td>
+                                        <td class="px-4 py-3 text-right font-semibold text-slate-700">1,800만원</td>
+                                        <td class="px-4 py-3 text-right">
+                                            <span class="bg-slate-50 text-slate-600 border border-slate-200 px-2 py-0.5 rounded text-xs font-semibold">80%</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+    
+                    <!-- Section 2: Major Ranking -->
+                    <div class="p-6 pt-2 pb-2">
+                        <h3 class="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                            <iconify-icon icon="solar:users-group-two-rounded-bold" class="text-slate-600"></iconify-icon>
+                            전공별 랭킹
+                        </h3>
+                        <div class="overflow-hidden rounded-xl border border-slate-200">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50/80 text-slate-500 font-medium text-xs">
+                                    <tr>
+                                        <th class="px-4 py-3 w-12 text-center">순위</th>
+                                        <th class="px-4 py-3">전공</th>
+                                        <th class="px-4 py-3 text-center">인원</th>
+                                        <th class="px-4 py-3 text-right">징수액</th>
+                                        <th class="px-4 py-3 text-right">징수율</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-50 text-slate-700">
+                                    <tr class="hover:bg-slate-50/50 transition-colors">
+                                        <td class="px-4 py-3 text-center"><iconify-icon icon="solar:medal-star-bold" class="text-blue-600 text-lg"></iconify-icon></td>
+                                        <td class="px-4 py-3 font-medium">전산학부</td>
+                                        <td class="px-4 py-3 text-center text-slate-500">95명</td>
+                                        <td class="px-4 py-3 text-right font-semibold text-blue-600">4,750만원</td>
+                                        <td class="px-4 py-3 text-right">
+                                            <span class="bg-blue-50 text-blue-600 border border-blue-100 px-2 py-0.5 rounded text-xs font-semibold">100%</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50/50 transition-colors">
+                                        <td class="px-4 py-3 text-center"><iconify-icon icon="solar:medal-star-bold" class="text-slate-400 text-lg"></iconify-icon></td>
+                                        <td class="px-4 py-3 font-medium">전기및전자공학부</td>
+                                        <td class="px-4 py-3 text-center text-slate-500">88명</td>
+                                        <td class="px-4 py-3 text-right font-semibold text-slate-700">3,960만원</td>
+                                        <td class="px-4 py-3 text-right">
+                                            <span class="bg-slate-50 text-slate-600 border border-slate-200 px-2 py-0.5 rounded text-xs font-semibold">90%</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+    
+                    <!-- Section 3: Combination Ranking -->
+                    <div class="p-6 pt-2">
+                        <h3 class="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                            <iconify-icon icon="solar:layers-bold" class="text-slate-600"></iconify-icon>
+                            입학년도+전공 조합 랭킹
+                        </h3>
+                        <div class="overflow-hidden rounded-xl border border-slate-200">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50/80 text-slate-500 font-medium text-xs">
+                                    <tr>
+                                        <th class="px-4 py-3 w-12 text-center">순위</th>
+                                        <th class="px-4 py-3">입학년도</th>
+                                        <th class="px-4 py-3">전공</th>
+                                        <th class="px-4 py-3 text-center">인원</th>
+                                        <th class="px-4 py-3 text-right">징수액</th>
+                                        <th class="px-4 py-3 text-right">징수율</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-50 text-slate-700">
+                                    <tr class="hover:bg-slate-50/50 transition-colors">
+                                        <td class="px-4 py-3 text-center"><iconify-icon icon="solar:medal-star-bold" class="text-blue-600 text-lg"></iconify-icon></td>
+                                        <td class="px-4 py-3 font-medium">1992년</td>
+                                        <td class="px-4 py-3 text-slate-500">전산학부</td>
+                                        <td class="px-4 py-3 text-center text-slate-500">12명</td>
+                                        <td class="px-4 py-3 text-right font-semibold text-blue-600">600만원</td>
+                                        <td class="px-4 py-3 text-right">
+                                            <span class="bg-blue-50 text-blue-600 border border-blue-100 px-2 py-0.5 rounded text-xs font-semibold">100%</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50/50 transition-colors">
+                                        <td class="px-4 py-3 text-center"><iconify-icon icon="solar:medal-star-bold" class="text-slate-400 text-lg"></iconify-icon></td>
+                                        <td class="px-4 py-3 font-medium">1995년</td>
+                                        <td class="px-4 py-3 text-slate-500">전기및전자공학부</td>
+                                        <td class="px-4 py-3 text-center text-slate-500">14명</td>
+                                        <td class="px-4 py-3 text-right font-semibold text-slate-700">630만원</td>
+                                        <td class="px-4 py-3 text-right">
+                                            <span class="bg-slate-50 text-slate-600 border border-slate-200 px-2 py-0.5 rounded text-xs font-semibold">90%</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Footer Summary -->
+                <div class="px-6 py-5 bg-blue-50 border-t border-blue-100 grid grid-cols-3 gap-4 text-center">
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium mb-1">총 납부 인원</p>
+                        <p class="text-lg font-bold text-slate-900">358명</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium mb-1">총 징수액</p>
+                        <p class="text-lg font-bold text-blue-600">1억 4,970만원</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium mb-1">평균 징수율</p>
+                        <p class="text-lg font-bold text-slate-700">84%</p>
+                    </div>
+                </div>
+    
+                <!-- Close Button Top Right -->
+                <button onclick="closeDuesModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors p-1">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    
+        <!-- Mentor Calendar Modal -->
+        <div id="calendarModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeCalendarModal()">
+            </div>
+            <div class="relative w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden animate-enter border border-slate-100 flex flex-col max-h-[95vh]">
+    
+                <!-- Header Section (Static) -->
+                <div class="p-8 border-b border-slate-100 bg-white shrink-0">
+                    <div class="flex flex-col gap-1">
+                        <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2 mb-2 tracking-tight">
+                            <iconify-icon icon="solar:calendar-mark-bold" class="text-blue-600"></iconify-icon>
+                            KAIST 동문 멘토링 슬롯: 선착순 찜하기 🏃
+                        </h2>
+                        <p class="text-slate-500 text-sm">새로운 멘토링 시간이 매달 업데이트됩니다. 원하는 선배의 15분 시간을 놓치지 마세요!</p>
+                    </div>
+                </div>
+    
+                <!-- Scrollable Content -->
+                <div class="overflow-y-auto bg-slate-50/50 p-6 md:p-8 flex-1">
+                    
+                    <!-- 1. Calendar View (Default) -->
+                    <div id="calendarView" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden block">
+                        <!-- Calendar Toolbar -->
+                        <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
+                            <h3 class="text-lg font-bold text-slate-900 tracking-tight">2025년 12월 멘토링 가능 동문 현황</h3>
+                            <!-- Mentor Register Button Here -->
+                            <div class="flex gap-2">
+                                 <button id="btnOpenQr" onclick="showQrView()" class="btn-shiny bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-medium text-sm flex items-center gap-2 shadow-lg shadow-blue-500/20 transition-all">
+                                   <iconify-icon icon="heroicons:qr-code-20-solid" width="20"></iconify-icon>
+                                   멘토 등록 QR 코드
+                                </button>
+                            </div>
+                        </div>
+    
+                        <!-- Calendar Grid -->
+                        <div class="border-b border-slate-100 bg-slate-50">
+                            <div class="grid grid-cols-7 divide-x divide-slate-100">
+                                <!-- Headers -->
+                                <div class="py-3 text-center text-sm font-semibold text-slate-500">일</div>
+                                <div class="py-3 text-center text-sm font-semibold text-slate-500">월</div>
+                                <div class="py-3 text-center text-sm font-semibold text-slate-500">화</div>
+                                <div class="py-3 text-center text-sm font-semibold text-slate-500">수</div>
+                                <div class="py-3 text-center text-sm font-semibold text-slate-500">목</div>
+                                <div class="py-3 text-center text-sm font-semibold text-slate-500">금</div>
+                                <div class="py-3 text-center text-sm font-semibold text-slate-500">토</div>
+                            </div>
+                        </div>
+    
+                        <div class="grid grid-cols-7 divide-x divide-y divide-slate-100 bg-white">
+                            <!-- Empty for Sun (Dec 1 is Mon) -->
+                            <div class="min-h-[120px] p-3 bg-slate-50/30"></div>
+    
+                            <!-- 1 (Mon) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">1</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 2 (Tue) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">2</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 3 (Wed) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">3</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 4 (Thu) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">4</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 5 (Fri) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">5</span>
+                                <button onclick="openMentorDetail()" class="bg-blue-100 hover:bg-blue-200 text-blue-600 rounded px-2 py-1 text-xs font-semibold mb-1 w-full text-left block transition-colors">
+                                    김민준</button>
+                                <button onclick="openMentorDetail()" class="bg-blue-100 hover:bg-blue-200 text-blue-600 rounded px-2 py-1 text-xs font-semibold mb-1 w-full text-left block transition-colors">
+                                    최현우</button>
+                            </div>
+    
+                            <!-- 6 (Sat) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">6</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 7 (Sun) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">7</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 8 (Mon) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">8</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 9 (Tue) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">9</span>
+                                <button onclick="openMentorDetail()" class="bg-blue-100 hover:bg-blue-200 text-blue-600 rounded px-2 py-1 text-xs font-semibold mb-1 w-full text-left block transition-colors">
+                                    박지영</button>
+                            </div>
+    
+                            <!-- 10 (Wed) -->
+                            <div class="min-h-[120px] p-3 group bg-white z-10 relative ring-2 ring-inset ring-blue-500 shadow-md">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">10</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 11 (Thu) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">11</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 12 (Fri) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">12</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 13 (Sat) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">13</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 14 (Sun) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">14</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 15 (Mon) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">15</span>
+                                <button onclick="openMentorDetail()" class="bg-blue-100 hover:bg-blue-200 text-blue-600 rounded px-2 py-1 text-xs font-semibold mb-1 w-full text-left block transition-colors">
+                                    김민준</button>
+                                <button onclick="openMentorDetail()" class="bg-blue-100 hover:bg-blue-200 text-blue-600 rounded px-2 py-1 text-xs font-semibold mb-1 w-full text-left block transition-colors">
+                                    박지영</button>
+                                <button onclick="openMentorDetail()" class="bg-blue-100 hover:bg-blue-200 text-blue-600 rounded px-2 py-1 text-xs font-semibold mb-1 w-full text-left block transition-colors">
+                                    최현우</button>
+                            </div>
+    
+                            <!-- 16 (Tue) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">16</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 17 (Wed) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">17</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 18 (Thu) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">18</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 19 (Fri) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">19</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 20 (Sat) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">20</span>
+                                <button onclick="openMentorDetail()" class="bg-blue-100 hover:bg-blue-200 text-blue-600 rounded px-2 py-1 text-xs font-semibold mb-1 w-full text-left block transition-colors">
+                                    최현우</button>
+                            </div>
+    
+                            <!-- 21 (Sun) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">21</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 22 (Mon) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">22</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 23 (Tue) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">23</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 24 (Wed) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">24</span>
+                                <button onclick="openMentorDetail()" class="bg-blue-100 hover:bg-blue-200 text-blue-600 rounded px-2 py-1 text-xs font-semibold mb-1 w-full text-left block transition-colors">
+                                    김민준</button>
+                                <button onclick="openMentorDetail()" class="bg-blue-100 hover:bg-blue-200 text-blue-600 rounded px-2 py-1 text-xs font-semibold mb-1 w-full text-left block transition-colors">
+                                    박지영</button>
+                            </div>
+    
+                            <!-- 25 (Thu) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">25</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 26 (Fri) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">26</span>
+                                <div class="bg-green-100 text-green-700 rounded px-2 py-1 text-xs font-semibold mb-1 w-fit">
+                                    형** (23:30)</div>
+                                <div class="bg-green-100 text-green-700 rounded px-2 py-1 text-xs font-semibold mb-1 w-fit">
+                                    장** (06:30)</div>
+                            </div>
+    
+                            <!-- 27 (Sat) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">27</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 28 (Sun) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">28</span>
+                                <div class="text-xs text-slate-400">멘토링 없음</div>
+                            </div>
+    
+                            <!-- 29 (Mon) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">29</span>
+                                <button onclick="openMentorDetail()" class="bg-blue-100 hover:bg-blue-200 text-blue-600 rounded px-2 py-1 text-xs font-semibold mb-1 w-full text-left block transition-colors">
+                                    김민준</button>
+                            </div>
+    
+                            <!-- 30 (Tue) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">30</span>
+                                <div class="bg-green-100 text-green-700 rounded px-2 py-1 text-xs font-semibold mb-1 w-fit">
+                                    김** (07:00)</div>
+                            </div>
+    
+                            <!-- 31 (Wed) -->
+                            <div class="min-h-[120px] p-3 group hover:bg-slate-50 transition-colors">
+                                <span class="text-sm font-bold text-slate-900 block mb-2">31</span>
+                                <div class="bg-green-100 text-green-700 rounded px-2 py-1 text-xs font-semibold mb-1 w-fit">
+                                    김** (23:15)</div>
+                            </div>
+    
+                            <!-- Empty Cells for end of week (Thu, Fri, Sat) -->
+                            <div class="min-h-[120px] p-3 bg-slate-50/30"></div>
+                            <div class="min-h-[120px] p-3 bg-slate-50/30"></div>
+                            <div class="min-h-[120px] p-3 bg-slate-50/30"></div>
+                        </div>
+                    </div>
+    
+                    <!-- 2. Mentor Detail View (New) -->
+                    <div id="mentorDetailView" class="hidden flex-col h-full animate-enter">
+                        <!-- Action Bar -->
+                        <div class="flex items-center justify-between mb-8">
+                            <button onclick="showCalendarView()" class="px-5 py-2.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 text-sm font-medium flex items-center gap-2 transition-colors">
+                                <iconify-icon icon="solar:arrow-left-linear" width="18"></iconify-icon> 전체 달력으로 돌아가기
+                            </button>
+                            <button onclick="showQrView()" class="btn-shiny bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium text-sm flex items-center gap-2 shadow-lg shadow-blue-500/20 transition-all">
+                                <iconify-icon icon="heroicons:qr-code-20-solid" width="20"></iconify-icon>
+                                멘토 등록 QR 코드
+                            </button>
+                        </div>
+    
+                        <div class="flex flex-col lg:flex-row gap-6 h-full">
+                            <!-- Left Sidebar: Mentor List -->
+                            <div class="w-full lg:w-72 flex flex-col gap-4 shrink-0">
+                                <!-- Card 1 (Active) -->
+                                <div class="bg-white rounded-xl p-6 border-2 border-blue-500 shadow-sm relative flex flex-col items-center text-center">
+                                    <div class="w-16 h-16 rounded-full bg-blue-500 text-white flex items-center justify-center text-xl font-bold mb-3">
+                                        김</div>
+                                    <h3 class="text-lg font-bold text-slate-900 mb-1">김민준</h3>
+                                    <p class="text-blue-500 text-[13px] font-medium leading-snug">구글 AI 리서처 (05학번)</p>
+                                    <p class="text-slate-500 text-[13px] mb-4">전산학</p>
+                                    
+                                    <div class="w-full border-t border-slate-100 my-3"></div>
+                                    
+                                    <div class="text-left w-full mb-4">
+                                        <span class="text-xs text-slate-500 block mb-1">팀블 관계:</span>
+                                        <span class="text-sm font-bold text-blue-500">1촌 관계</span>
+                                    </div>
+                                    <button class="w-full py-2.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-semibold transition-colors">
+                                        현재 시간표
+                                    </button>
+                                </div>
+    
+                                <!-- Card 2 -->
+                                <div class="bg-[#F1F5F9] rounded-xl p-6 flex flex-col items-center text-center hover:bg-white hover:shadow-md transition-all group cursor-pointer border border-transparent hover:border-slate-200">
+                                    <div class="w-16 h-16 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-bold mb-3 shadow-sm">
+                                        박</div>
+                                    <h3 class="text-lg font-bold text-slate-900 mb-1">박지영</h3>
+                                    <p class="text-blue-500 text-[13px] font-medium leading-snug">삼성전자 CTO (99학번)</p>
+                                    <p class="text-slate-500 text-[13px] mb-4">전자공학</p>
+                                    
+                                    <div class="w-full border-t border-slate-200/60 my-3"></div>
+                                    
+                                    <div class="text-left w-full mb-4">
+                                        <span class="text-xs text-slate-500 block mb-1">팀블 관계:</span>
+                                        <span class="text-sm font-bold text-[#22c55e]">2촌 관계</span>
+                                    </div>
+                                    <button class="text-slate-500 text-sm font-medium hover:text-slate-900">
+                                        시간표 보기
+                                    </button>
+                                </div>
+    
+                                <!-- Card 3 -->
+                                <div class="bg-[#F1F5F9] rounded-xl p-6 flex flex-col items-center text-center hover:bg-white hover:shadow-md transition-all group cursor-pointer border border-transparent hover:border-slate-200">
+                                    <div class="w-16 h-16 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-bold mb-3 shadow-sm">
+                                        최</div>
+                                    <h3 class="text-lg font-bold text-slate-900 mb-1">최현우</h3>
+                                    <p class="text-blue-500 text-[13px] font-medium leading-snug">신한은행 데이터 본부장 (10학번)</p>
+                                    <p class="text-slate-500 text-[13px] mb-4">경영공학</p>
+                                    
+                                    <div class="w-full border-t border-slate-200/60 my-3"></div>
+                                    
+                                    <div class="text-left w-full mb-4">
+                                        <span class="text-xs text-slate-500 block mb-1">팀블 관계:</span>
+                                        <span class="text-sm font-bold text-[#f97316]">3촌 관계</span>
+                                    </div>
+                                    <button class="text-slate-500 text-sm font-medium hover:text-slate-900">
+                                        시간표 보기
+                                    </button>
+                                </div>
+                            </div>
+    
+                            <!-- Right Content: Schedule Table -->
+                            <div class="flex-1 bg-[#F1F5F9] rounded-2xl p-8 border border-transparent">
+                                <h3 class="font-bold text-xl text-slate-900 mb-8">[김민준 동문] 12월 멘토링 시간표</h3>
+                                
+                                <div class="w-full">
+                                    <!-- Table Header -->
+                                    <div class="grid grid-cols-[100px_1fr_1fr] border-b border-slate-200 pb-4 mb-2">
+                                        <div class="text-sm font-medium text-slate-500 pl-2">시간</div>
+                                        <div class="text-sm font-medium text-slate-500">12-05 (금)</div>
+                                        <div class="text-sm font-medium text-slate-500">12-29 (월)</div>
+                                    </div>
+    
+                                    <!-- Rows -->
+                                    <!-- 10:00 -->
+                                    <div class="grid grid-cols-[100px_1fr_1fr] border-b border-slate-200 min-h-[56px] items-center">
+                                        <div class="text-slate-900 font-medium pl-2">10:00</div>
+                                        <div class="border-l border-slate-200 h-full"></div> <!-- Empty -->
+                                        <div class="border-l border-slate-200 h-full p-1">
+                                            <button class="w-full h-full bg-blue-100 hover:bg-blue-200 text-blue-500 text-sm font-medium rounded flex items-center justify-center transition-colors py-2.5">
+                                                15분 찜하기
+                                            </button>
+                                        </div>
+                                    </div>
+    
+                                    <!-- 10:15 -->
+                                    <div class="grid grid-cols-[100px_1fr_1fr] border-b border-slate-200 min-h-[56px] items-center">
+                                        <div class="text-slate-900 font-medium pl-2">10:15</div>
+                                        <div class="border-l border-slate-200 h-full"></div> <!-- Empty -->
+                                        <div class="border-l border-slate-200 h-full p-1">
+                                            <button class="w-full h-full bg-blue-100 hover:bg-blue-200 text-blue-500 text-sm font-medium rounded flex items-center justify-center transition-colors py-2.5">
+                                                15분 찜하기
+                                            </button>
+                                        </div>
+                                    </div>
+    
+                                    <!-- 10:30 -->
+                                    <div class="grid grid-cols-[100px_1fr_1fr] border-b border-slate-200 min-h-[56px] items-center">
+                                        <div class="text-slate-900 font-medium pl-2">10:30</div>
+                                        <div class="border-l border-slate-200 h-full"></div> <!-- Empty -->
+                                        <div class="border-l border-slate-200 h-full p-1">
+                                            <div class="w-full h-full bg-[#22c55e] text-white text-sm font-bold rounded flex items-center justify-center py-2.5 shadow-sm">
+                                                멘토링 확정
+                                            </div>
+                                        </div>
+                                    </div>
+    
+                                    <!-- 10:45 -->
+                                    <div class="grid grid-cols-[100px_1fr_1fr] border-b border-slate-200 min-h-[56px] items-center">
+                                        <div class="text-slate-900 font-medium pl-2">10:45</div>
+                                        <div class="border-l border-slate-200 h-full"></div> <!-- Empty -->
+                                        <div class="border-l border-slate-200 h-full p-1">
+                                            <button class="w-full h-full bg-blue-100 hover:bg-blue-200 text-blue-500 text-sm font-medium rounded flex items-center justify-center transition-colors py-2.5">
+                                                15분 찜하기
+                                            </button>
+                                        </div>
+                                    </div>
+    
+                                    <!-- 14:00 -->
+                                    <div class="grid grid-cols-[100px_1fr_1fr] border-b border-slate-200 min-h-[56px] items-center">
+                                        <div class="text-slate-900 font-medium pl-2">14:00</div>
+                                        <div class="border-l border-slate-200 h-full p-1">
+                                            <button class="w-full h-full bg-blue-100 hover:bg-blue-200 text-blue-500 text-sm font-medium rounded flex items-center justify-center transition-colors py-2.5">
+                                                15분 찜하기
+                                            </button>
+                                        </div>
+                                        <div class="border-l border-slate-200 h-full"></div> <!-- Empty -->
+                                    </div>
+    
+                                    <!-- 14:15 -->
+                                    <div class="grid grid-cols-[100px_1fr_1fr] border-b border-slate-200 min-h-[56px] items-center">
+                                        <div class="text-slate-900 font-medium pl-2">14:15</div>
+                                        <div class="border-l border-slate-200 h-full p-1">
+                                            <div class="w-full h-full bg-red-100 border border-red-200 text-red-500 text-sm font-medium rounded flex items-center justify-center py-2.5">
+                                                찜 진행 중 (홍**)
+                                            </div>
+                                        </div>
+                                        <div class="border-l border-slate-200 h-full"></div> <!-- Empty -->
+                                    </div>
+    
+                                    <!-- 14:30 -->
+                                    <div class="grid grid-cols-[100px_1fr_1fr] border-b border-slate-200 min-h-[56px] items-center">
+                                        <div class="text-slate-900 font-medium pl-2">14:30</div>
+                                        <div class="border-l border-slate-200 h-full p-1">
+                                            <button class="w-full h-full bg-blue-100 hover:bg-blue-200 text-blue-500 text-sm font-medium rounded flex items-center justify-center transition-colors py-2.5">
+                                                15분 찜하기
+                                            </button>
+                                        </div>
+                                        <div class="border-l border-slate-200 h-full"></div> <!-- Empty -->
+                                    </div>
+    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- 3. Mentor Registration QR View (Hidden initially) -->
+                    <div id="qrView" class="hidden h-full flex-col">
+                        <button onclick="showCalendarView()" class="mb-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all text-sm font-medium w-fit shadow-sm">
+                            <iconify-icon icon="solar:arrow-left-linear"></iconify-icon>
+                            전체 달력으로 돌아가기
+                        </button>
+                        
+                        <div class="bg-[#F1F5F9] rounded-3xl p-12 flex flex-col items-center justify-center text-center flex-1 border border-slate-100">
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">동문 멘토 등록 QR 코드</h3>
+                            <p class="text-slate-500 mb-8 text-sm">행사장에서 QR 코드를 스캔하여 멘토링 가능 일정을 등록하세요</p>
+                            
+                            <!-- QR Image -->
+                            <div class="bg-white p-4 rounded-3xl shadow-lg shadow-slate-200/50 mb-6">
+                                <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/917d6f93-fb36-439a-8c48-884b67b35381_1600w.jpg" width="240" height="240" alt="QR Code" class="rounded-lg">
+                            </div>
+                            
+                            <p class="text-slate-400 text-sm mb-12">https://preview--teambltest.lovable.app/mentor-register</p>
+                            
+                            <!-- Instruction Box -->
+                            <div class="bg-blue-100/50 w-full max-w-2xl rounded-2xl p-6 text-left border border-blue-100">
+                                <h4 class="font-bold text-slate-900 mb-4 flex items-center gap-2 text-sm">
+                                    📱 모바일 등록 안내
+                                </h4>
+                                <ol class="list-decimal list-inside space-y-2 text-slate-600 text-sm">
+                                    <li>QR 코드를 스캔하세요</li>
+                                    <li>성함, 이메일, 전공, 과정, 입학년도를 입력하세요</li>
+                                    <li>회사명과 전문분야를 입력하세요</li>
+                                    <li>최근 3개월 이내 날짜와 15분 단위 시간을 선택하세요</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Close Button -->
+                <button onclick="closeCalendarModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 transition-colors">
+                    <iconify-icon icon="solar:close-circle-bold" width="28"></iconify-icon>
+                </button>
+            </div>
+        </div>
+    
+        <!-- Invite Alert Modal -->
+        <div id="inviteAlertModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeInviteAlert()"></div>
+            <div class="relative w-full max-w-[320px] bg-white rounded-2xl shadow-2xl overflow-hidden animate-enter scale-100">
+                <div class="p-6 text-center">
+                    <p class="text-[15px] leading-relaxed text-slate-700 tracking-tight">
+                        본 서비스를 제공중인 팀블은, 초대 기반 서비스입니다. 주변에서 초대를 받으시기 바랍니다
+                    </p>
+                </div>
+                <div class="border-t border-slate-100 flex justify-end">
+                    <button onclick="closeInviteAlert()" class="px-6 py-3 text-[15px] font-semibold text-blue-600 hover:bg-blue-50/50 transition-colors w-full">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Upvote Modal (Matches First Reference Image) -->
+        <div id="upvoteModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeUpvoteModal()"></div>
+            <div class="relative w-full max-w-[420px] bg-white rounded-2xl shadow-2xl overflow-hidden animate-enter p-8">
+                <h3 class="text-xl font-bold text-slate-900 mb-5">투자 참여 확인</h3>
+                <div class="space-y-4 mb-10">
+                    <p class="text-slate-600 text-[16px]">
+                        등록하신 카드로 <span class="text-indigo-600 font-bold">100,000원</span>이 결제됩니다.
+                    </p>
+                    <p class="text-slate-600 text-[16px]">
+                        계속 진행하시겠습니까?
+                    </p>
+                    <div class="flex items-center gap-2 text-emerald-600 font-medium text-[15px] pt-1">
+                        <iconify-icon icon="solar:check-circle-bold" width="18"></iconify-icon>
+                        <span>펀딩 실패시 100% 환불됩니다.</span>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button onclick="closeUpvoteModal()" class="px-5 py-2.5 rounded-lg text-slate-700 font-semibold text-sm hover:bg-slate-50 border border-slate-200 transition-colors">
+                        취소
+                    </button>
+                    <button onclick="closeUpvoteModal()" class="px-5 py-2.5 rounded-lg bg-[#16a34a] text-white font-semibold text-sm hover:bg-[#15803d] shadow-md transition-all">
+                        결제 진행
+                    </button>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Downvote Modal -->
+        <div id="downvoteModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeDownvoteModal()"></div>
+            <div class="relative w-full max-w-[480px] bg-white rounded-2xl shadow-2xl overflow-hidden animate-enter p-8">
+                <h3 class="text-xl font-bold text-slate-900 mb-3 tracking-tight">거절 사유 입력</h3>
+                <div class="space-y-1 mb-6">
+                    <p class="text-slate-500 text-[15px]">거절 사유를 간단히 적어 주시면 뼈와 되고 살이 됩니다.</p>
+                    <p class="text-slate-400 text-sm">익명으로 전달됩니다.</p>
+                </div>
+                
+                <div class="mb-8">
+                    <textarea class="w-full h-32 p-4 bg-white border border-slate-200 rounded-xl text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:border-slate-300 resize-none transition-all text-[15px]" placeholder="거절 사유를 입력해주세요..."></textarea>
+                </div>
+    
+                <div class="flex justify-end gap-3">
+                    <button onclick="closeDownvoteModal()" class="px-5 py-2.5 rounded-lg text-slate-700 font-semibold text-sm hover:bg-slate-50 border border-slate-200 transition-colors">
+                        취소
+                    </button>
+                    <button onclick="closeDownvoteModal()" class="px-5 py-2.5 rounded-lg bg-[#DC2626] text-white font-semibold text-sm hover:bg-[#B91C1C] shadow-md transition-all">
+                        제출
+                    </button>
+                </div>
+            </div>
+        </div>
+    
+        <script>
+            // Lucide Icons
+            lucide.createIcons();
+    
+            // Team Modal
+            function openModal() {
+                document.getElementById('teamModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeModal() {
+                document.getElementById('teamModal').classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+    
+            // Dues Modal
+            function openDuesModal() {
+                document.getElementById('duesModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeDuesModal() {
+                document.getElementById('duesModal').classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+    
+            // Calendar Modal
+            function openCalendarModal() {
+                document.getElementById('calendarModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                // Ensure default view is calendar when opening
+                showCalendarView();
+            }
+            function closeCalendarModal() {
+                document.getElementById('calendarModal').classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+    
+            // Invite Alert Modal
+            function openInviteAlert() {
+                document.getElementById('inviteAlertModal').classList.remove('hidden');
+            }
+            function closeInviteAlert() {
+                document.getElementById('inviteAlertModal').classList.add('hidden');
+            }
+    
+            // Upvote Modal
+            function openUpvoteModal() {
+                document.getElementById('upvoteModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeUpvoteModal() {
+                document.getElementById('upvoteModal').classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+    
+            // Downvote Modal
+            function openDownvoteModal() {
+                document.getElementById('downvoteModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeDownvoteModal() {
+                document.getElementById('downvoteModal').classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+    
+    
+            // Toggle Views in Calendar Modal
+            function showQrView() {
+                document.getElementById('calendarView').classList.remove('block');
+                document.getElementById('calendarView').classList.add('hidden');
+                
+                document.getElementById('mentorDetailView').classList.remove('flex');
+                document.getElementById('mentorDetailView').classList.add('hidden');
+                
+                document.getElementById('qrView').classList.remove('hidden');
+                document.getElementById('qrView').classList.add('flex');
+            }
+    
+            function showCalendarView() {
+                document.getElementById('qrView').classList.remove('flex');
+                document.getElementById('qrView').classList.add('hidden');
+                
+                document.getElementById('mentorDetailView').classList.remove('flex');
+                document.getElementById('mentorDetailView').classList.add('hidden');
+                
+                document.getElementById('calendarView').classList.remove('hidden');
+                document.getElementById('calendarView').classList.add('block');
+            }
+            
+            function openMentorDetail() {
+                document.getElementById('calendarView').classList.remove('block');
+                document.getElementById('calendarView').classList.add('hidden');
+                
+                document.getElementById('qrView').classList.remove('flex');
+                document.getElementById('qrView').classList.add('hidden');
+                
+                document.getElementById('mentorDetailView').classList.remove('hidden');
+                document.getElementById('mentorDetailView').classList.add('flex');
+            }
+    
+            // Close on escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeModal();
+                    closeDuesModal();
+                    closeCalendarModal();
+                    closeInviteAlert();
+                    closeUpvoteModal();
+                    closeDownvoteModal();
+                }
+            });
+        </script>
+    </body></html>
